@@ -1,6 +1,6 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
-podTemplate(label: 'icp-build',
+podTemplate(label: 'icp-liberty-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'ibmcom/docker:17.10', ttyEnabled: true, command: 'cat'),
@@ -10,7 +10,7 @@ podTemplate(label: 'icp-build',
     volumes: volumes
 )
 {
-    node ('icp-build') {
+    node ('icp-liberty-build') {
         def gitCommit
         stage ('Extract') {
           checkout scm
