@@ -33,11 +33,11 @@ spec:
       containers:
       - name: jenkinstest
         image: mycluster.icp:8500/jenkinstest/<DOCKER_IMAGE>
-        #readinessProbe:
-        #  httpGet:
-        #    path: /jenkinstest/health
-        #    port: 9080
-        #  initialDelaySeconds: 20
+        readinessProbe:
+          httpGet:
+          path: /jenkinstest/health
+            port: 9080
+          initialDelaySeconds: 60
         # resources:
         #   requests:
         #     cpu: 100m
