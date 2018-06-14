@@ -22,7 +22,7 @@ podTemplate(label: 'icp-liberty-build',
           container('helm') {
             sh """
             helm init --skip-refresh
-            helm upgrade --install --wait --values chart/jenkinstest/values.yaml jenkinstest chart/jenkinstest
+            helm upgrade --install --wait --values chart/jenkinstest/values.yaml jenkinstest chart/jenkinstest --tls
             """
           }
 
