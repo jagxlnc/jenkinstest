@@ -22,6 +22,7 @@ podTemplate(label: 'icp-liberty-build',
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
             sh """
+            docker tag websphere-liberty:kernel $imageTag
             ln -s /msb_reg_sec/.dockercfg /home/jenkins/.dockercfg
             mkdir /home/jenkins/.docker
             ln -s /msb_reg_sec/.dockerconfigjson /home/jenkins/.docker/config.json
