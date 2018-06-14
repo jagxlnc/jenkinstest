@@ -20,8 +20,10 @@ podTemplate(label: 'icp-build',
 
         stage ('deploy') {
           container('helm') {
-            sh "helm init --skip-refresh"
+            sh """
+            helm init --skip-refresh
             helm upgrade --install --wait --values pipeline.yaml jenkinstestchart chart
+            """
           }
 
         }
