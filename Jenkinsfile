@@ -4,6 +4,7 @@ podTemplate(label: 'icp-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'ibmcom/docker:17.10', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat')
     ],
     volumes: volumes
 ) 
@@ -24,15 +25,37 @@ podTemplate(label: 'icp-build',
         }
         stage ('docker') { 
           container('docker') {
-            def imageTag = "mycluster.icp:8500/nm-pilot/flashboard:${gitCommit}"
+            def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
             sh """
-            docker build -t flashboard .
-            docker tag flashboard $imageTag
+            docker build -t jenkinstest .
+            docker tag jenkinstest $imageTag
             ln -s /msb_reg_sec/.dockercfg /home/jenkins/.dockercfg
             mkdir /home/jenkins/.docker
             ln -s /msb_reg_sec/.dockerconfigjson /home/jenkins/.docker/config.json
             docker push $imageTag
+            """
+          }
+        }
+        stage ('deploy') { 
+          container('kubectl') {        
+            def imageTag = null
+            imageTag = gitCommit
+            sh """
+            #!/bin/bash
+            echo "checking if jenkinstest-deployment already exists"
+            if kubectl describe deployment jenkinstest-deployment --namespace jenkinstest; then
+                echo "Application already exists, update..."
+                kubectl set image deployment/jenkinstest-deployment jenkinstest=mycluster.icp:8500/jenkinstest/jenkinstest:${imageTag} --namespace jenkinstest
+            else
+                sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
+                echo "Create deployment"
+                kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
+                echo "Create service"  
+            fi
+            echo "Describe deployment"
+            kubectl describe deployment jenkinstest-deployment --namespace jenkinstest
+            echo "finished"
             """
           }
         }
