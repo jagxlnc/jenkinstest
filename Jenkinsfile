@@ -17,12 +17,20 @@ podTemplate(label: 'icp-liberty-build',
           gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
           echo "checked out git commit ${gitCommit}"
         }
+        stage ('maven build') {
+          container('maven') {
+            sh '''
+            mvn clean test install
+            '''
+          }
+        }
         stage ('docker') {
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
             sh """
-            docker tag websphere-liberty:kernel $imageTag
+            docker build -t jenkinstest .
+            docker tag jenkinstest $imageTag
             ln -s /msb_reg_sec/.dockercfg /home/jenkins/.dockercfg
             mkdir /home/jenkins/.docker
             ln -s /msb_reg_sec/.dockerconfigjson /home/jenkins/.docker/config.json
