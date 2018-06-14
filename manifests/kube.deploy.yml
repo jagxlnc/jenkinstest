@@ -35,7 +35,7 @@ spec:
         image: mycluster.icp:8500/jenkinstest/<DOCKER_IMAGE>
         readinessProbe:
           httpGet:
-          path: /jenkinstest/health
+            path: /jenkinstest/health
             port: 9080
           initialDelaySeconds: 60
         # resources:
