@@ -1,13 +1,14 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
-volumes += secretVolume(secretName: 'microclimate-icp-secret', mountPath: '/msb_reg_sec')
-podTemplate(label: 'icp-build', 
+volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
+podTemplate(label: 'icp-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'ibmcom/docker:17.10', ttyEnabled: true, command: 'cat'),
-        containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat')
+        containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:v2.7.2', ttyEnabled: true, command: 'cat')
     ],
     volumes: volumes
-) 
+)
 {
     node ('icp-build') {
         def gitCommit
@@ -23,7 +24,7 @@ podTemplate(label: 'icp-build',
             '''
           }
         }
-        stage ('docker') { 
+        stage ('docker') {
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
@@ -37,8 +38,8 @@ podTemplate(label: 'icp-build',
             """
           }
         }
-        stage ('deploy') { 
-          container('kubectl') {        
+        stage ('deploy') {
+          container('kubectl') {
             def imageTag = null
             imageTag = gitCommit
             sh """
@@ -51,7 +52,7 @@ podTemplate(label: 'icp-build',
                 sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
                 echo "Create deployment"
                 kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
-                echo "Create service"  
+                echo "Create service"
             fi
             echo "Describe deployment"
             kubectl describe deployment jenkinstest-deployment --namespace jenkinstest

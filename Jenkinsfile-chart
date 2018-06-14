@@ -1,5 +1,5 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
-volumes += secretVolume(secretName: 'microclimate-icp-secret', mountPath: '/msb_reg_sec')
+volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 podTemplate(label: 'icp-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8', ttyEnabled: true, command: 'cat'),
@@ -22,7 +22,7 @@ podTemplate(label: 'icp-build',
           container('helm') {
             sh """
             helm init --skip-refresh
-            helm upgrade --install --wait --values pipeline.yaml jenkinstestchart chart
+            helm upgrade --install --wait --values values.yaml jenkinstest chart
             """
           }
 
