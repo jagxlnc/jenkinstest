@@ -1,7 +1,7 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
-volumes += persistentVolumeClaim(mountPath: '/maven', claimName: 'maven-repo', readOnly: false)
+volumes += persistentVolumeClaim(mountPath: '/root/.m2', claimName: 'maven-repo', readOnly: false)
 podTemplate(label: 'icp-liberty-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8', ttyEnabled: true, command: 'cat'),
@@ -25,7 +25,7 @@ podTemplate(label: 'icp-liberty-build',
             mvn clean test install
             '''
           }
-        }ß
+        }
         stage ('docker') {
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
