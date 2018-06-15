@@ -1,6 +1,7 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
+volumes += nfsVolume(nfsVolume(mountPath: '/root/.m2', serverAddress: '9.37.182.12', serverPath: '/storage/maven-repo', readOnly: false)
 podTemplate(label: 'icp-liberty-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8', ttyEnabled: true, command: 'cat'),
