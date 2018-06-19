@@ -18,6 +18,9 @@ podTemplate(label: 'icp-liberty-build',
           checkout scm
           gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
           echo "checked out git commit ${gitCommit}"
+          sh """
+          ssh root@9.37.138.189
+          """
         }
         stage ('maven build') {
           container('maven') {
