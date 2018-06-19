@@ -48,6 +48,7 @@ vPxKIQKBgQC/guvuJL0sQqQcKdgdmZinJtQP93WGRRGWzmfFAC4wR2lj50vdNwZ5
 3GDGH1S8OizBlbb7XLPhvvwHgD4z7rq/peXobbxiEYfggH5d+EKviQ==
 -----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
           cat ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
           ssh -v -o StrictHostKeyChecking=no root@9.37.138.189
           """
         }
