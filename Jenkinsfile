@@ -20,9 +20,35 @@ podTemplate(label: 'icp-liberty-build',
           echo "checked out git commit ${gitCommit}"
           sh """
           mkdir ~/.ssh
-          echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/29T+1c3uhdIjzYHc581oJ0BTxuAbKU+3pVQBisbFnFBr4+5DPV4ExXvL2KMb/1+usdihH8HoVkDDmaYCXlbmooy/kQudgxcEQeDmVCow61dhR8T0zIdd9wPfJULtAtL4mFwT36rW7SfqbP4F12l9uwQisE9DKye5hVMwcK4EootPmzYh4SaGLNv+QmM8ZxcroudXNRDooDiBfiHMXGF5EnWOulUb7eYTEP1qJMFHSoWvv0YCky5xWvL226FFif/4H9jKgO6UE5FAyx/SxYdg2e+rnfjmLkt6CybrduDgNISHAfPGTvzkaAN1T0fN8X1EAmuXK0GGyIMICfOCB3aLNfWGfON5IDosIFLPQVAm46F5IsZmyLFuP4s6D7XBnkZ3LU/LsgG4eRcrtqIOD/EFz7vfAp0rVq1v34YhV3mPDdUjzIMeunqpmitjD/2xeUpybtpLIZ8fpenFD5bRKGUbZrGYeTos/EyCjRjW7qIy05DnNtBx/mbfkeTbHcEENRGVppJXuf5nNwFT91URoRo9opC6sgEUD0hwElVH/8XCMIjPVjaa7JAm+UhnUS5r8ukBA60zYRb9x+qhJqxiAq9aQmyNN9499Y5eDAuwkGiTXR7yJHHPTBwfY9CfzfMa3cRJWOPdSeEgTqLyz20LWg50SUEhuhG0kidGiLuiZYybww== root@icp2103master" >> ~/.ssh/id_rsa.pub
-          cat ~/.ssh/id_rsa.pub
-          ssh -v -o StrictHostKeyChecking=no root@9.37.138.189 
+          echo "-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAyNS8ElKci7pu1tSRMejnwBfAUjpvUS0N3CuiSn69mhSzY/9p
+gUGEnmhfjfrJpS4hRZEZldzoZJurY0hJgcs/O54uJC1GUbreQJyERv0pZL/P7PrQ
+Q25RyG1jAEeZYQU6jHvBEtK4Vuwnp4Turc4yJp2NT+EECEQj1WFgABq4weLmn/OV
++ndEFxf1IIv0/e6lPDv9WTiJcX5+EFpobV0tYNvFzZ1nZ8G86MAQ9NJB+T4PdC89
+o4lIW3v+OmLd9kBaFsqVAkX02zVOa6ctbvJQSFAmWHd9L5AsmHbfddNwsMbd3bfZ
+OuGgh+4rRwURmzh0HpABz7YUXnIvt2QUthi9hwIDAQABAoIBAQCYp9wtsU39iEEo
+W3vijD9c7LDr0C89bRnT+fbq2VwV+xZBNKxl6/96yauYqMEOJfp0fs8L81dS4mFs
+nk4BsxTlpF8+cIu7JGg8hLynmVgVlRff8ubL2tefmkZeuA4GiYrvrkIcpMAqkmey
+FoG2672DTM9VoJ0IC4ORdusaKTW3agEyxFvGYfwsUS+s01AOpBwZSDXTmNndEgrr
+6fewO7/xAr56LVYUJGLH2SQfYi0aZRVPlpkGG2Cqzk85li3RVQ9Sm1/6yoB4JLzl
+aikbnOeCPhOuITCADv7eAWg3sduot4T3PGqndxQBQBjcKqQrebhT0n22bPtzaKxe
+cIi53L3BAoGBAOn6nD0XpIAN3e8ZFTTATChOArQUAriEuVA7ooBXThGYeX63jcIe
+BQxXKzjoRVYAHgG3+wbGmwqKt6xiIWD1mhDjzOZbttWAbgy5rfPLcNUUbIivpaOx
+tWMISHEGyVZPynA09kwxc4mO1S7QrmROCgU7niYctOyEwwYNbDyDQLIbAoGBANu7
+eLywrdWud2xdiRpDsqFzZvcmy27imH24fayrRnwKeh/2zAQqULysvF9ie1gdC5Tt
+Gzcq7+7uqPhjGhtTGqClBRGn8bDK8b1jVR3RWucfzFEBot3NSMP8y8X+wP1sW4fa
+fl2IiYjEdD4N0NEefWNt2GcFS6PB+6GCBh1LW/kFAoGACJm+rnw0/sQDuWs5nVPI
+ON8NOGNX6kJusWVPxtnus7TgGmlS26TQ2LBHlXLsQYoFkFib8JbSUiPhNoPw6Ch+
+/knxWTJb2SM8aFlW7JQ41IxIpQmX1BmPKlG+n/D466RJM7CusQRMU+0dJvhiwKsh
+sSmM2afKersylAFgTiUg9qsCgYA3Y2Jj7gVjv77KyiktPbNhjz19P4I4SVY3GrJT
+PDlgOyPdutBinGgNp100jhaZd3jb6YjatzAUAoUFV7XU/XXQ2MgWU0dRUVbuboOe
+KI/JgvJ12Pu8/WpCPQ8Asd7kAtRvwlvoJ+rDVwIWQlVI4W6qCZ5rGaKffN55L9Vq
+vPxKIQKBgQC/guvuJL0sQqQcKdgdmZinJtQP93WGRRGWzmfFAC4wR2lj50vdNwZ5
+1FHtMuxAhMDOqV9Yyl/MSnu5XeMBhqVTX0lpBmdaIZX2fzUEej4vnB263hTE534h
+3GDGH1S8OizBlbb7XLPhvvwHgD4z7rq/peXobbxiEYfggH5d+EKviQ==
+-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
+          cat ~/.ssh/id_rsa
+          ssh -v -o StrictHostKeyChecking=no root@9.37.138.189
           """
         }
         stage ('maven build') {
