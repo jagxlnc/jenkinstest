@@ -22,7 +22,7 @@ podTemplate(label: 'icp-liberty-build',
           mkdir ~/.ssh
           echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/29T+1c3uhdIjzYHc581oJ0BTxuAbKU+3pVQBisbFnFBr4+5DPV4ExXvL2KMb/1+usdihH8HoVkDDmaYCXlbmooy/kQudgxcEQeDmVCow61dhR8T0zIdd9wPfJULtAtL4mFwT36rW7SfqbP4F12l9uwQisE9DKye5hVMwcK4EootPmzYh4SaGLNv+QmM8ZxcroudXNRDooDiBfiHMXGF5EnWOulUb7eYTEP1qJMFHSoWvv0YCky5xWvL226FFif/4H9jKgO6UE5FAyx/SxYdg2e+rnfjmLkt6CybrduDgNISHAfPGTvzkaAN1T0fN8X1EAmuXK0GGyIMICfOCB3aLNfWGfON5IDosIFLPQVAm46F5IsZmyLFuP4s6D7XBnkZ3LU/LsgG4eRcrtqIOD/EFz7vfAp0rVq1v34YhV3mPDdUjzIMeunqpmitjD/2xeUpybtpLIZ8fpenFD5bRKGUbZrGYeTos/EyCjRjW7qIy05DnNtBx/mbfkeTbHcEENRGVppJXuf5nNwFT91URoRo9opC6sgEUD0hwElVH/8XCMIjPVjaa7JAm+UhnUS5r8ukBA60zYRb9x+qhJqxiAq9aQmyNN9499Y5eDAuwkGiTXR7yJHHPTBwfY9CfzfMa3cRJWOPdSeEgTqLyz20LWg50SUEhuhG0kidGiLuiZYybww== root@icp2103master" >> ~/.ssh/id_rsa.pub
           cat ~/.ssh/id_rsa.pub
-          ssh root@9.37.138.12
+          ssh -o StrictHostKeyChecking=no root@9.37.138.12 uptime
           """
         }
         stage ('maven build') {
