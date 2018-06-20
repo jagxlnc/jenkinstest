@@ -1,11 +1,8 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
-podTemplate(label: 'icp-liberty-build', 
+podTemplate(label: 'icp-liberty-build',
             nodeSelector: 'beta.kubernetes.io/arch=amd64',
-            envVars: [
-              envVar(key: 'JENKINS_URL', value: 'http://bcbs-jenkins-01:8080/jenkins')
-            ],
     containers: [
-        containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp-slave', ttyEnabled: true),
+        containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave', ttyEnabled: true),
     ],
     volumes: volumes
 )
