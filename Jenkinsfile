@@ -23,5 +23,19 @@ podTemplate(label: 'icp-liberty-build',
             '''
           }
         }
+         stage ('docker') {
+          container('docker') {
+            def imageTag = "dc1cp01.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
+            echo "imageTag ${imageTag}"
+            sh """
+            ln -s /jenkins_docker_sec/.dockercfg /home/jenkins/.dockercfg
+            mkdir /home/jenkins/.docker
+            ln -s /jenkins_docker_sec/.dockerconfigjson /home/jenkins/.docker/config.json
+            docker build -t jenkinstest .
+            docker tag jenkinstest $imageTag
+            docker push $imageTag
+            """
+          }
+        }
     }
 }
