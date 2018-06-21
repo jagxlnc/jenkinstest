@@ -1,4 +1,5 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
+volumes += secretVolume(secretName: 'jenkins-docker-sec', mountPath: '/jenkins_docker_sec')
 podTemplate(label: 'icp-liberty-build',
             nodeSelector: 'beta.kubernetes.io/arch=amd64',
     containers: [
