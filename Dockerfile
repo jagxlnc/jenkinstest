@@ -1,4 +1,4 @@
-FROM websphere-liberty:kernel
+FROM mycluster.icp:8500/default/websphere-liberty:kernel
 MAINTAINER IBM Java engineering at IBM Cloud
 COPY /target/liberty/wlp/usr/servers/defaultServer /config/
 COPY /target/liberty/wlp/usr/shared/resources /config/resources/
