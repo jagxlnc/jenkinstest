@@ -3,7 +3,8 @@ podTemplate(label: 'icp-liberty-build',
             nodeSelector: 'beta.kubernetes.io/arch=amd64',
     containers: [
         containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp-slave', ttyEnabled: true),
-        containerTemplate(name: 'maven', image: 'dc1cp01.icp:8500/default/maven:3.5.2-jdk-8-june2018.1', ttyEnabled: true, command: 'cat')
+        containerTemplate(name: 'maven', image: 'dc1cp01.icp:8500/default/maven:3.5.2-jdk-8-june2018.1', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'docker', image: 'dc1cp01.icp:8500/default/docker:17.12-june2018.1', ttyEnabled: true, command: 'cat')
     ],
     volumes: volumes
 )
