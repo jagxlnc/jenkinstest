@@ -1,5 +1,5 @@
 FROM  dc1cp01.icp:8500/default/websphere-liberty:webProfile6-june2018.1
-MAINTAINER IBM Java engineering at IBM Cloud
+RUN keytool -keystore /opt/ibm/java/jre/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert --alias issuing -file /usr/local/share/ca-certificates/issuing.crt
 COPY /target/liberty/wlp/usr/servers/defaultServer /config/
 COPY /target/liberty/wlp/usr/shared/resources /config/resources/
 COPY /src/main/liberty/config/jvmbx.options /config/jvm.options
