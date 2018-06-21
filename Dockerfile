@@ -1,4 +1,4 @@
-FROM  dc1cp01.icp:8500/default/websphere-liberty:webProfile
+FROM  dc1cp01.icp:8500/default/websphere-liberty:webProfile6
 MAINTAINER IBM Java engineering at IBM Cloud
 COPY /target/liberty/wlp/usr/servers/defaultServer /config/
 COPY /target/liberty/wlp/usr/shared/resources /config/resources/
