@@ -1,11 +1,8 @@
-def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
-volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
-volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
+
 podTemplate(label: 'checkout',
     containers: [
         containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave', ttyEnabled: true),
-    ],
-    volumes: volumes
+    ]
 ) {
    podTemplate(label: 'icp-liberty-build',
     containers: [
@@ -13,11 +10,9 @@ podTemplate(label: 'checkout',
         containerTemplate(name: 'docker', image: 'docker:17.12', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:v2.7.2', ttyEnabled: true, command: 'cat')
-    ],
-    volumes: volumes
+    ]
   )
-  }
-{
+  {
     def gitCommit
     node ('checkout') {
         stage ('Extract') {
@@ -74,4 +69,5 @@ podTemplate(label: 'checkout',
           }
         }
     }
+}
 }
