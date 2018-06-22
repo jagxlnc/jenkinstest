@@ -6,7 +6,7 @@ podTemplate(label: 'checkout',
         containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave', ttyEnabled: true),
     ],
     volumes: volumes
-)
+),
 podTemplate(label: 'icp-liberty-build',
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
