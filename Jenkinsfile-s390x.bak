@@ -13,11 +13,9 @@ podTemplate(label: 'icp-liberty-build',
     node ('icp-liberty-build') {
         def gitCommit
         stage ('Extract') {
-          container('jnlp') {
-            checkout scm
-            gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-            echo "checked out git commit ${gitCommit}"
-          }
+          checkout scm
+          gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          echo "checked out git commit ${gitCommit}"
         }
         stage ('maven build') {
           container('maven') {
