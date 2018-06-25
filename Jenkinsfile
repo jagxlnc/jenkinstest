@@ -39,5 +39,27 @@ podTemplate(label: 'icp-liberty-build',
             """
           }
         }
+        stage ('deploy') {
+          container('kubectl') {
+            def imageTag = null
+            imageTag = gitCommit
+            sh """
+            #!/bin/bash
+            echo "checking if jenkinstest-deployment already exists"
+            if kubectl describe deployment jenkinstest-deployment --namespace jenkinstest; then
+                echo "Application already exists, update..."
+                kubectl set image deployment/jenkinstest-deployment jenkinstest=dc1cp01.icp:8500/jenkinstest/jenkinstest:${imageTag} --namespace jenkinstest
+            else
+                sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
+                echo "Create deployment"
+                kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
+                echo "Create service"
+            fi
+            echo "Describe deployment"
+            kubectl describe deployment jenkinstest-deployment --namespace jenkinstest
+            echo "finished"
+            """
+          }
+        }
     }
 }
