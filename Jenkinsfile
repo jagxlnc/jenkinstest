@@ -4,8 +4,6 @@ podTemplate(label: 'icp-liberty-build',
             nodeSelector: 'beta.kubernetes.io/arch=s390x',
     containers: [
         containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp-z:3.20-june2018.1', ttyEnabled: true),
-        containerTemplate(name: 'maven', image: 'dc1cp01.icp:8500/default/maven-z:3.5.4-jdk-8-june2018.1', ttyEnabled: true, command: 'cat'),
-        containerTemplate(name: 'docker', image: 'dc1cp01.icp:8500/default/docker-z:17.12-june2018.1', ttyEnabled: true, command: 'cat')
     ],
     volumes: volumes
 )
