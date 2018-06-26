@@ -3,7 +3,7 @@ volumes += secretVolume(secretName: 'jenkins-docker-sec', mountPath: '/jenkins_d
 podTemplate(label: 'icp-liberty-build-z',
             nodeSelector: 'beta.kubernetes.io/arch=s390x',
     containers: [
-        containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp:3.20-amd64.1', ttyEnabled: true),
+        containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp-z:3.20-june2018.1', ttyEnabled: true, args: '${computer.jnlpmac} ${computer.name}'),
     ],
     volumes: volumes
 )
