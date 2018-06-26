@@ -3,7 +3,7 @@ volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
 podTemplate(label: 'icp-liberty-build',
     containers: [
-        containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201', command: 'cat'),
+        containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201'),
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'docker:17.12', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
