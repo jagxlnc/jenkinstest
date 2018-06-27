@@ -1,8 +1,11 @@
-podTemplate(label: 'icp-liberty-build-z',
+def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
+volumes += secretVolume(secretName: 'jenkins-docker-sec', mountPath: '/jenkins_docker_sec')
+podTemplate(label: 'icp-liberty-build-z', slaveConnectTimeout: 600,
             nodeSelector: 'beta.kubernetes.io/arch=s390x',
     containers: [
         containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp-z:3.20-june2018.6', ttyEnabled: true, args: '${computer.jnlpmac} ${computer.name}'),
-    ]
+    ],
+    volumes: volumes
 )
 {
     node ('icp-liberty-build-z') {
