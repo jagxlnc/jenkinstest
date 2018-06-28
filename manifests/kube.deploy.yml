@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: "jenkinstest-ingress"
   annotations:
-    ingress.kubernetes.io/rewrite-target: /,
+    ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/secure-backends: true
 spec:
   rules:
