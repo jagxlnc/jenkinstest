@@ -1,3 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "jenkinstest-ingress"
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /,
+    ingress.kubernetes.io/secure-backends: true
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /jenkinstest
+        backend:
+          serviceName: jenkinstest-service
+          servicePort: 9443
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,8 +25,6 @@ spec:
   type: NodePort
   ports:
   # the port that this service should serve on
-  - name: http
-    port: 9080
   - name: https
     port: 9443
 
