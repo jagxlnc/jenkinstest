@@ -27,7 +27,8 @@ spec:
   # the port that this service should serve on
   - name: https
     port: 9443
-
+  - name: http
+    port: 9080
   selector:
     app: "jenkinsdemo-selector"
 ---
