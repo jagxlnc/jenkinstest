@@ -1,7 +1,7 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'jenkins-docker-sec', mountPath: '/jenkins_docker_sec')
 volumes += persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'jenkins-maven')
-podTemplate(label: 'icp-liberty-build',
+podTemplate(label: 'icp-liberty-build-1',
             nodeSelector: 'beta.kubernetes.io/arch=amd64',
     containers: [
         containerTemplate(name: 'jnlp', image: 'dc1cp01.icp:8500/default/jnlp:3.20-amd64.1', ttyEnabled: true),
@@ -13,7 +13,7 @@ podTemplate(label: 'icp-liberty-build',
     volumes: volumes
 )
 {
-    node ('icp-liberty-build') {
+    node ('icp-liberty-build-1') {
         def gitCommit
         stage ('Extract') {
           checkout scm
