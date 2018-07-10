@@ -1,5 +1,6 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'jenkins-docker-sec', mountPath: '/jenkins_docker_sec')
+volumes += persistentVolumeClaim(mountPath: '/home/jenkins/.m2/repository', claimName: 'jenkins-maven')
 podTemplate(label: 'icp-liberty-build',
             nodeSelector: 'beta.kubernetes.io/arch=amd64',
     containers: [
@@ -7,7 +8,7 @@ podTemplate(label: 'icp-liberty-build',
         containerTemplate(name: 'maven', image: 'dc1cp01.icp:8500/default/maven:3.5.2-jdk-8-june2018.2', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'dc1cp01.icp:8500/default/docker:17.12-june2018.1', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'dc1cp01.icp:8500/default/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
-        containerTemplate(name: 'helm', image: 'dc1cp01.icp:8500/default/k8s-helm:v2.7.2', ttyEnabled: true, command: 'cat'),        
+        containerTemplate(name: 'helm', image: 'dc1cp01.icp:8500/default/k8s-helm:v2.7.2', ttyEnabled: true, command: 'cat'),
     ],
     volumes: volumes
 )
