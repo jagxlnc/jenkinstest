@@ -1,6 +1,6 @@
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'jenkins-docker-sec', mountPath: '/jenkins_docker_sec')
-volumes += persistentVolumeClaim(mountPath: '/home/jenkins/.m2/repository', claimName: 'jenkins-maven')
+volumes += persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'jenkins-maven')
 podTemplate(label: 'icp-liberty-build',
             nodeSelector: 'beta.kubernetes.io/arch=amd64',
     containers: [
