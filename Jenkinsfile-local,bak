@@ -19,9 +19,6 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
         }
-    }
-    input 'Do you approve deployment?'
-    node ('icp-liberty-build') {
         stage ('maven build') {
           container('maven') {
             sh '''
