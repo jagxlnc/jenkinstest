@@ -25,7 +25,7 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
             mvn clean test install
             '''
           }
-          stash name: 'workspace'
+          stash name: 'workspace' excludes: '/target/liberty'
         }
     }
     input 'Do you approve image creation?'
