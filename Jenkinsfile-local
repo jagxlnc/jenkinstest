@@ -2,7 +2,7 @@ def gitCommit
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
-podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
+podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
     containers: [
         containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201'),
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
@@ -13,7 +13,7 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
     volumes: volumes
 )
 {
-    node ('icp-liberty-build') {
+    node ('icp-liberty-build-2') {
         stage ('Extract') {
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
@@ -30,7 +30,7 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
         }
     }
     input 'Do you approve image creation?'
-    node ('icp-liberty-build') {
+    node ('icp-liberty-build-2') {
         stage ('docker') {
           unstash 'source'
           unstash 'war'
