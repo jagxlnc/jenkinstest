@@ -1,3 +1,4 @@
+def gitCommit
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
@@ -5,6 +6,12 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
     containers: [
         containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201'),
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
+    ],
+    volumes: volumes
+)
+podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
+    containers: [
+        containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201'),
         containerTemplate(name: 'docker', image: 'docker:17.12', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:v2.7.2', ttyEnabled: true, command: 'cat')
@@ -12,26 +19,26 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
     volumes: volumes
 )
 {
-    node ('icp-liberty-build') {
-        def gitCommit
+    node ('icp-liberty-build') {  
         stage ('Extract') {
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
-            stash name: 'source'
+
         }
-    }
-    input 'Do you approve deployment?'
-    node ('icp-liberty-build') {
         stage ('maven build') {
-          unstash 'source'
           container('maven') {
             sh '''
             mvn clean test install
             '''
           }
+          stash name: 'source'
         }
+    }
+    input 'Do you approve image creation?'
+    node ('icp-liberty-build-2') {
         stage ('docker') {
+          unstash 'source'
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
