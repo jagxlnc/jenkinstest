@@ -18,11 +18,13 @@ podTemplate(label: 'icp-liberty-build', slaveConnectTimeout: 600,
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
+            stash name: 'source'
         }
     }
     input 'Do you approve deployment?'
     node ('icp-liberty-build') {
         stage ('maven build') {
+          unstash 'source'
           container('maven') {
             sh '''
             mvn clean test install
