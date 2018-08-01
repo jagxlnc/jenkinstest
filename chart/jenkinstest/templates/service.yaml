@@ -10,10 +10,14 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - port: {{ .Values.service.httpExternalPort }}
+      targetPort: {{ .Values.service.httpInternalPort }}
       protocol: TCP
-      name: {{ .Values.service.name }}
+      name: http
+    - port: {{ .Values.service.httpsExternalPort }}
+      targetPort: {{ .Values.service.httpsInternalPort }}
+      protocol: TCP
+      name: https
   selector:
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
