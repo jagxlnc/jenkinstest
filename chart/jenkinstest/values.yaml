@@ -4,33 +4,20 @@ replicaCount: 1
 revisionHistoryLimit: 1
 image:
   repository: mycluster.icp:8500/jenkinstest/jenkinstest
-  tag: 7aa33a2
+  tag: @@@TAG@@@
   pullPolicy: IfNotPresent
-  resources:
-    requests:
-      cpu: 200m
-      memory: 300Mi
 service:
-  name: Node
   type: NodePort
-  servicePort: 9080
-  servicePortHttps: 9443
-hpa:
+  httpInternalPort: 80
+  httpExternalPort: 80
+  httpsInternalPort: 443
+  httpsExternalPort: 443
+ingress:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 2
-  metrics:
-    cpu:
-      targetAverageUtilization: 70
-    memory:
-      targetAverageUtilization: 70
-services:
-base:
-  enabled: false
-  replicaCount: 1
-  image:
-    tag : v0.9.9
-  weight: 100
-istio:
-  enabled: false
-  weight: 100
+  hosts:
+  annotations: {
+    "ingress.kubernetes.io/rewrite-target": "/",
+    # "ingress.kubernetes.io/secure-backends": "true"
+    }
+  tls:
+resources:
