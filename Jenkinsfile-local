@@ -159,7 +159,6 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
                   deployOnlyChanged: false
               ]
           ])
-        }
 
         }
     }
