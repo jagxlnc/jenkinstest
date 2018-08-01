@@ -74,7 +74,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
           def componentName = "jenkinstest"
           def applicationName = "jenkinstest"
           def deploymentEnvironment = "Dev"
-          def deployProcess = "Deploy-commercial-desktop-backend"
+          def deployProcess = "Deploy-jenkinstest"
           def pushArtifact = true
           def imageTag = ""
           def IMAGE_TAG
