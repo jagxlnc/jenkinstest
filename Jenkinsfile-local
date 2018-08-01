@@ -18,22 +18,15 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
-            stash name: 'source'
         }
         stage ('maven build') {
           container('maven') {
             sh '''
             mvn clean test install
             '''
-            stash includes: 'target/jenkinstest-1.0-SNAPSHOT.war', name: 'war'
           }
         }
-    }
-    input 'Do you approve image creation?'
-    node ('icp-liberty-build-2') {
         stage ('docker') {
-          unstash 'source'
-          unstash 'war'
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
