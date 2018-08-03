@@ -25,10 +25,20 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             mvn javadoc:javadoc clean test install
             '''
             junit 'target/test-reports/it/*.xml'
-            publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/site/apidocs', reportFiles: 'index.html', includes: '**/*', reportName: 'JavaDoc', reportTitles: ''])
+
+            // publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/site/apidocs', reportFiles: 'index.html', includes: '**/*', reportName: 'JavaDoc', reportTitles: ''])
+
+            publishHTML (target: [
+              allowMissing: false,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: 'target/site/apidocs',
+              reportFiles: 'index.html',
+              reportName: "JavaDoc Report"
+            ])
           }
         }
-        stage ('docker') {
+        /* stage ('docker') {
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
@@ -41,7 +51,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             docker push $imageTag
             """
           }
-        }
+        } */
         /* stage ('deploy') {
           container('kubectl') {
             def imageTag = null
@@ -72,7 +82,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             """
           } */
 
-        stage ('ucd') {
+        /* stage ('ucd') {
           def componentName = "jenkinstest"
           def applicationName = "jenkinstest"
           def deploymentEnvironment = "Dev"
@@ -162,6 +172,6 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
               ]
           ])
 
-        }
+        } */
     }
 }
