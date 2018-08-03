@@ -23,28 +23,10 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
           container('maven') {
             sh '''
             mvn javadoc:javadoc test install
-            pwd
-            ls -la
-            cd target
-            ls -la
-            cd site
-            ls -la
-            cd apidocs
-            ls -la
-            ls -la target/site/apidocs
             '''
             junit 'target/test-reports/it/*.xml'
 
-            // publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/site/apidocs', reportFiles: 'index.html', includes: '**/*', reportName: 'JavaDoc', reportTitles: ''])
-
-            publishHTML (target: [
-              allowMissing: true,
-              alwaysLinkToLastBuild: false,
-              keepAll: true,
-              reportDir: 'target/site/apidocs',
-              reportFiles: 'index.html',
-              reportName: "JavaDoc Report"
-            ])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/site/apidocs', reportFiles: 'index.html', includes: '**/*', reportName: 'JavaDoc', reportTitles: ''])
           }
         }
         /* stage ('docker') {
