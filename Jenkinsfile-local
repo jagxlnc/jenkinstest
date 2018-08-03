@@ -22,7 +22,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
         stage ('maven build') {
           container('maven') {
             sh '''
-            mvn javadoc:javadoc clean test install
+            mvn javadoc:javadoc test install
             pwd
             ls -la
             cd target
@@ -30,7 +30,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             cd site
             ls -la
             cd apidocs
-            ls -la 
+            ls -la
             ls -la target/site/apidocs
             '''
             junit 'target/test-reports/it/*.xml'
