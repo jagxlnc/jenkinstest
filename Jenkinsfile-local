@@ -24,6 +24,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             sh '''
             mvn clean test install
             '''
+            junit 'target/test-reports/it/*.xml'
           }
         }
         stage ('docker') {
