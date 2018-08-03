@@ -24,6 +24,13 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             sh '''
             mvn javadoc:javadoc clean test install
             pwd
+            ls -la
+            cd target
+            ls -la
+            cd site
+            ls -la
+            cd apidocs
+            ls -la 
             ls -la target/site/apidocs
             '''
             junit 'target/test-reports/it/*.xml'
