@@ -30,7 +30,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
           }
         }
       }
-      { node ('docker-slave') {
+      node ('docker-slave') {
         stage ('docker') {
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
