@@ -32,6 +32,8 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
       }
       node ('docker-slave') {
         stage ('docker') {
+          checkout scm
+          sh "git checkout -f ${gitCommit}"
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
