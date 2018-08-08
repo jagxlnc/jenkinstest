@@ -12,6 +12,16 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
     ],
     volumes: volumes
 )
+podTemplate(label: 'icp-liberty-build-3', slaveConnectTimeout: 600,
+    containers: [
+        containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201'),
+        containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'docker', image: 'docker:17.12', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:v2.7.2', ttyEnabled: true, command: 'cat')
+    ],
+    volumes: volumes
+)
 {
     node ('icp-liberty-build-2') {
         stage ('Extract') {
