@@ -18,6 +18,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
+            stash excludes: 'target/', name: 'source'
         }
         stage ('maven build') {
           container('maven') {
@@ -27,13 +28,16 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             junit 'target/test-reports/it/*.xml'
 
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/site/apidocs', reportFiles: 'index.html', includes: '**/*', reportName: 'JavaDoc', reportTitles: ''])
+            stash includes: '/target/*.war', name: 'app'
           }
         }
       }
       node ('docker-slave') {
         stage ('docker') {
-          checkout scm
-          sh "git checkout -f ${gitCommit}"
+          unstash 'source'
+          unstash 'app'
+          sh "ls -la"
+          sh "ls -la target"
           container('docker') {
             def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
