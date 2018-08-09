@@ -1,0 +1,23 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+revisionHistoryLimit: 1
+image:
+  repository: mycluster.icp:8500/jenkinstest/jenkinstest
+  tag: 543418d
+  pullPolicy: IfNotPresent
+service:
+  type: NodePort
+  httpInternalPort: 80
+  httpExternalPort: 80
+  httpsInternalPort: 443
+  httpsExternalPort: 443
+ingress:
+  enabled: false
+  hosts:
+  annotations: {
+    "ingress.kubernetes.io/rewrite-target": "/",
+    # "ingress.kubernetes.io/secure-backends": "true"
+    }
+  tls:
+resources:
