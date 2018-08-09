@@ -82,10 +82,10 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
           } */
 
         stage ('ucd') {
-          def componentName = "jenkinstest"
-          def applicationName = "jenkinstest"
-          def deploymentEnvironment = "Dev"
-          def deployProcess = "Deploy-jenkinstest"
+          def componentName = "Example"
+          def applicationName = "Example Application"
+          def deploymentEnvironment = "DEV"
+          def deployProcess = "Deploy-Example"
           def pushArtifact = true
           def imageTag = ""
           def IMAGE_TAG
