@@ -4,7 +4,6 @@ volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
 podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
     containers: [
-        containerTemplate(name: 'jnlp', image: 'mycluster.icp:8500/default/myslave:3.201'),
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'docker:17.12', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'ibmcom/k8s-kubectl:v1.8.3', ttyEnabled: true, command: 'cat'),
@@ -18,35 +17,23 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
-            stash excludes: 'target/', name: 'source'
         }
         stage ('maven build') {
           container('maven') {
             sh '''
-            mvn javadoc:javadoc test install
+            mvn test install
             '''
-            junit 'target/test-reports/it/*.xml'
-
-            publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/site/apidocs', reportFiles: 'index.html', includes: '**/*', reportName: 'JavaDoc', reportTitles: ''])
-            stash includes: 'target/*.war', name: 'app'
           }
         }
-      }
-      node ('docker-slave') {
         stage ('docker') {
-          unstash 'source'
-          unstash 'app'
-          sh "ls -la"
-          sh "ls -la target"
           container('docker') {
-            def imageTag = "mycluster.icp:8500/jenkinstest/jenkinstest:${gitCommit}"
+            def imageTag = "mycluster.icp:8500/default/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
             sh """
             ln -s /msb_reg_sec/.dockercfg /home/jenkins/.dockercfg
             mkdir /home/jenkins/.docker
             ln -s /msb_reg_sec/.dockerconfigjson /home/jenkins/.docker/config.json
-            docker build -t jenkinstest .
-            docker tag jenkinstest $imageTag
+            docker build -t $imageTag .
             docker push $imageTag
             """
           }
@@ -60,15 +47,15 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             echo "checking if jenkinstest-deployment already exists"
             if kubectl describe deployment jenkinstest-deployment --namespace jenkinstest; then
                 echo "Application already exists, update..."
-                kubectl set image deployment/jenkinstest-deployment jenkinstest=mycluster.icp:8500/jenkinstest/jenkinstest:${imageTag} --namespace jenkinstest
+                kubectl set image deployment/jenkinstest-deployment jenkinstest=mycluster.icp:8500/defaul/jenkinstest:${imageTag} --namespace default
             else
-                sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
+                sed -i "s/<DOCKER_IMAGE>/default:${imageTag}/g" manifests/kube.deploy.yml
                 echo "Create deployment"
-                kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
+                kubectl apply -f manifests/kube.deploy.yml --namespace default
                 echo "Create service"
             fi
             echo "Describe deployment"
-            kubectl describe deployment jenkinstest-deployment --namespace jenkinstest
+            kubectl describe deployment jenkinstest-deployment --namespace default
             echo "finished"
             """
           }
@@ -79,98 +66,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             helm init --skip-refresh --client-only
             helm upgrade --install --wait --values chart/jenkinstest/values.yaml jenkinstest chart/jenkinstest  --tls --tls-ca-cert=/msb_helm_sec/ca.pem --tls-cert=/msb_helm_sec/cert.pem --tls-key=/msb_helm_sec/key.pem
             """
-          } */
-
-        stage ('ucd') {
-          def componentName = "Example"
-          def applicationName = "Example Application"
-          def deploymentEnvironment = "DEV"
-          def deployProcess = "Deploy-Example"
-          def pushArtifact = true
-          def imageTag = ""
-          def IMAGE_TAG
-          def TAG_NEW_String
-
-          def OFFSET_DIR="chart/" + componentName
-          def TARGET_FILE="values.yaml"
-          def BUILD_PROPERTIES_FILE="build.properties"
-          def TAG_OLD_String="@@@TAG@@@"
-
-          def UCD_APP_NAME = applicationName
-          def UCD_COMPONENT_NAME = componentName
-          def UCD_COMPONENT_TEMPLATE = "HelmChartTemplate"
-          def UCD_DELIVERY_BASE_DIR = null
-          def UCD_DELIVERY_PUSH_VERSION = null
-          def UCD_Deploy_Env = deploymentEnvironment
-          def UCD_Deploy_Process = deployProcess
-          def UCD_Deploy_Version = null
-
-          imageTag = gitCommit
-          IMAGE_TAG = gitCommit
-          TAG_NEW_String=gitCommit
-
-          UCD_DELIVERY_BASE_DIR = WORKSPACE + "/" + OFFSET_DIR
-          UCD_DELIVERY_PUSH_VERSION = BRANCH_NAME + "." + BUILD_NUMBER
-          UCD_Deploy_Version = UCD_COMPONENT_NAME + ":" + BRANCH_NAME + "." + BUILD_NUMBER
-          TARGET_FILE =  UCD_DELIVERY_BASE_DIR + "/" + TARGET_FILE
-
-          sh """
-          #!/bin/bash
-          pwd
-          ls -l
-          echo "imageTag: ${imageTag}"
-          echo "BUILD_NUMBER: ${BUILD_NUMBER}"
-          echo "WORKSPACE: ${WORKSPACE}"
-          echo "UCD_APP_NAME = ${UCD_APP_NAME}"
-          echo "UCD_COMPONENT_NAME = ${UCD_COMPONENT_NAME}"
-          echo "UCD_Deploy_Env = ${UCD_Deploy_Env}"
-          echo "UCD_DELIVERY_BASE_DIR = ${UCD_DELIVERY_BASE_DIR}"
-          echo "UCD_DELIVERY_PUSH_VERSION = ${UCD_DELIVERY_PUSH_VERSION}"
-          echo "UCD_Deploy_Process = ${UCD_Deploy_Process}"
-          echo "UCD_Deploy_Version = ${UCD_Deploy_Version}"
-          echo "TARGET_FILE = ${TARGET_FILE}"
-          echo "-------------------------"
-          echo "Verify target file: ${TARGET_FILE}"
-          ls -l ${TARGET_FILE}
-          echo "update TAG before: "
-          cat ${TARGET_FILE} | grep tag:
-          sed -i "s|@@@TAG@@@|${imageTag}|g" ${TARGET_FILE}
-          echo "update TAG before: "
-          cat ${TARGET_FILE} | grep tag:
-          """
-
-          if (pushArtifact) {
-              step([$class: 'UCDeployPublisher',
-              siteName: 'UCD-Server',
-              component: [
-                  $class: 'com.urbancode.jenkins.plugins.ucdeploy.VersionHelper$VersionBlock',
-                  componentName: "${UCD_COMPONENT_NAME}",
-                  delivery: [
-                      $class: 'com.urbancode.jenkins.plugins.ucdeploy.DeliveryHelper$Push',
-                      pushVersion: "${UCD_DELIVERY_PUSH_VERSION}",
-                      baseDir: "${UCD_DELIVERY_BASE_DIR}",
-                      fileIncludePatterns: '/**',
-                      fileExcludePatterns: '',
-
-                      pushDescription: 'Pushed from Jenkins',
-                      pushIncremental: false
-                  ]
-              ]
-              ])
           }
-
-          step([$class: 'UCDeployPublisher',
-              siteName: 'UCD-Server',
-              deploy: [
-                  $class: 'com.urbancode.jenkins.plugins.ucdeploy.DeployHelper$DeployBlock',
-                  deployApp: "${UCD_APP_NAME}",
-                  deployEnv: "${UCD_Deploy_Env}",
-                  deployProc: "${UCD_Deploy_Process}",
-                  deployVersions: "${UCD_Deploy_Version}",
-                  deployOnlyChanged: false
-              ]
-          ])
-
-        }
+        } */
     }
 }
