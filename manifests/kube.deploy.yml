@@ -47,14 +47,14 @@ spec:
     spec:
       containers:
       - name: jenkinstest
-        image: dc1cp01.icp:8500/jenkinsdemo/<DOCKER_IMAGE>
+        image: mycluster.icp:8500/default/<DOCKER_IMAGE>
         readinessProbe:
           httpGet:
             path: /jenkinstest/health
             port: 9080
           initialDelaySeconds: 60
-      nodeSelector:
-        beta.kubernetes.io/arch: s390x
+      #nodeSelector:
+      #  beta.kubernetes.io/arch: s390x
         # resources:
         #   requests:
         #     cpu: 100m

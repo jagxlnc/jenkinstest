@@ -38,7 +38,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             """
           }
         }
-        /* stage ('deploy') {
+        stage ('deploy') {
           container('kubectl') {
             def imageTag = null
             imageTag = gitCommit
@@ -49,7 +49,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
                 echo "Application already exists, update..."
                 kubectl set image deployment/jenkinstest-deployment jenkinstest=mycluster.icp:8500/defaul/jenkinstest:${imageTag} --namespace default
             else
-                sed -i "s/<DOCKER_IMAGE>/default:${imageTag}/g" manifests/kube.deploy.yml
+                sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
                 echo "Create deployment"
                 kubectl apply -f manifests/kube.deploy.yml --namespace default
                 echo "Create service"
@@ -59,7 +59,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             echo "finished"
             """
           }
-        } */
+        }
         /* stage ('deploy') {
           container('helm') {
             sh """
