@@ -44,12 +44,10 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             imageTag = gitCommit
             sh """
             #!/bin/bash
-            kubectl config set-cluster cluster.local --server=https://9.37.138.189:8001 --insecure-skip-tls-verify=true
-            kubectl config set-context cluster.local-context --cluster=cluster.local
-            kubectl config set-credentials admin --token=AAeyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tOXZ4bTIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjEyZjU2OGU3LWQxYTgtMTFlOC04YmIxLTAwNTA1NmEwOTVlZSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.cWc-NF63S3hn3lyO5NjCDUNcQYd5D38fZehrgm2K9d_ZF2yYU7d8GVHXSraLgdqhdrl0ZAuNxTqMAfjpV2nqA6dABKA0twOnG1T0UUoGN2a-i0Vz8PTztIUQc6H9s1IMBDJLLNE9T5J13mfnnHcMUANXPnJRTSvhpYeH1Q33eZ95G1YkUtuPzqolWAmaQ7qd4dFQO6867bhlk8AAaZsKkV3QxivA26EPvrYx8ADuTG6Bm3RW-qngwzapCZwO-qLTyhAr6_-yb1JgmSQF2t6SSrrfluZ0-HMw_Y-NsDe_a-vaD_JskEfmIHzFl9UPGhAELpgdNcpdERjlVcgWjojU3A
-            kubectl config set-context cluster.local-context --user=admin --namespace=default
-            kubectl config use-context cluster.local-context
-
+            ls -la ~/.kube/config
+            cp config ~/.kube/config
+            ls -la ~/.kube/config
+            kubectl config use-context cluster.remote-context --user=admin --namespace=default
             echo "checking if jenkinsdemo-deployment already exists"
             if kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest; then
                 echo "Application already exists, update..."
