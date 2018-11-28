@@ -46,7 +46,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             sh """
             #!/bin/bash
             cd /kubeconfig
-            ls -la
+            cat config
             mkdir ~/.kube
             cp config ~/.kube/config
             ls -la ~/.kube/config
