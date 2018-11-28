@@ -50,18 +50,18 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             kubectl config set-context cluster.local-context --user=admin --namespace=default
             kubectl config use-context cluster.local-context
 
-            echo "checking if jenkinstest-deployment already exists"
-            if kubectl describe deployment jenkinstest-deployment --namespace jenkinstest; then
+            echo "checking if jenkinsdemo-deployment already exists"
+            if kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest; then
                 echo "Application already exists, update..."
-                kubectl set image deployment/jenkinstest-deployment jenkinstest=mycluster.icp:8500/defaul/jenkinstest:${imageTag} --namespace default
+                kubectl set image deployment/jenkinsdemo-deployment jenkinstest=mycluster.icp:8500/default/jenkinstest:${imageTag} --namespace jenkinstest
             else
                 sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
                 echo "Create deployment"
-                kubectl apply -f manifests/kube.deploy.yml --namespace default
+                kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
                 echo "Create service"
             fi
             echo "Describe deployment"
-            kubectl describe deployment jenkinstest-deployment --namespace default
+            kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest
             echo "finished"
             """
           }
