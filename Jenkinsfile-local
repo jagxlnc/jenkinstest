@@ -45,7 +45,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             sh """
             #!/bin/bash
             mkdir ~/.kube
-            cp /home/jenkins/config ~/.kube/config
+            cp config ~/.kube/config
             ls -la ~/.kube/config
             kubectl config use-context cluster.remote-context --user=admin --namespace=default
             echo "checking if jenkinsdemo-deployment already exists"
