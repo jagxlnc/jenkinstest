@@ -18,7 +18,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
         }
-        stage ('maven build') {
+        /*stage ('maven build') {
           container('maven') {
             sh '''
             mvn test install
@@ -37,14 +37,14 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             docker push $imageTag
             """
           }
-        }
+        }*/
         stage ('deploy') {
           container('kubectl') {
             def imageTag = null
             imageTag = gitCommit
             sh """
             #!/bin/bash
-            ls -la ~/.kube/config
+            env
             cp config ~/.kube/config
             ls -la ~/.kube/config
             kubectl config use-context cluster.remote-context --user=admin --namespace=default
