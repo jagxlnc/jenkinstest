@@ -26,18 +26,20 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             sh '''
             mvn test install
             '''
+            stash includes: 'target/jenkinstest-1.0-SNAPSHOT.war', name: 'warfile'
           }
         }
       }
       userInput = input(
         id: 'Proceed1', message: 'Proceed to Docker Build?', parameters: [
-        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Question']
+        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Proceed to Docker Build?']
         ])
       node ('icp-liberty-build-2') {
         if (userInput == true) {
           stage ('docker') {
             container('docker') {
               unstash 'source'
+              unstash 'warfile'
               def imageTag = "mycluster.icp:8500/default/jenkinstest:${gitCommit}"
               echo "imageTag ${imageTag}"
               sh """
