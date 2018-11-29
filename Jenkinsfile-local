@@ -1,4 +1,5 @@
 def gitCommit
+def userInput = true
 def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ]
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
@@ -18,6 +19,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
             echo "checked out git commit ${gitCommit}"
+            stash excludes: 'target/', name: 'source'
         }
         stage ('maven build') {
           container('maven') {
@@ -26,43 +28,52 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             '''
           }
         }
-        stage ('docker') {
-          container('docker') {
-            def imageTag = "mycluster.icp:8500/default/jenkinstest:${gitCommit}"
-            echo "imageTag ${imageTag}"
-            sh """
-            ln -s /msb_reg_sec/.dockercfg /home/jenkins/.dockercfg
-            mkdir /home/jenkins/.docker
-            ln -s /msb_reg_sec/.dockerconfigjson /home/jenkins/.docker/config.json
-            docker build -t $imageTag .
-            docker push $imageTag
-            """
+      }
+      userInput = input(
+        id: 'Proceed1', message: 'Proceed to Docker Build?', parameters: [
+        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Question']
+        ])
+      node ('icp-liberty-build-2') {
+        if (userInput == true) {
+          stage ('docker') {
+            container('docker') {
+              unstash 'source'
+              def imageTag = "mycluster.icp:8500/default/jenkinstest:${gitCommit}"
+              echo "imageTag ${imageTag}"
+              sh """
+              ln -s /msb_reg_sec/.dockercfg /home/jenkins/.dockercfg
+              mkdir /home/jenkins/.docker
+              ln -s /msb_reg_sec/.dockerconfigjson /home/jenkins/.docker/config.json
+              docker build -t $imageTag .
+              docker push $imageTag
+              """
+            }
           }
-        }
-        stage ('deploy') {
-          container('kubectl') {
-            def imageTag = null
-            imageTag = gitCommit
-            sh """
-            #!/bin/bash
-            mkdir ~/.kube
-            cp /kubeconfig/config ~/.kube/config
-            ls -la ~/.kube/config
-            kubectl config use-context cluster.remote-context --user=admin --namespace=default
-            echo "checking if jenkinsdemo-deployment already exists"
-            if kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest; then
-                echo "Application already exists, update..."
-                kubectl set image deployment/jenkinsdemo-deployment jenkinstest=mycluster.icp:8500/default/jenkinstest:${imageTag} --namespace jenkinstest
-            else
-                sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
-                echo "Create deployment"
-                kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
-                echo "Create service"
-            fi
-            echo "Describe deployment"
-            kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest
-            echo "finished"
-            """
+          stage ('deploy') {
+            container('kubectl') {
+              def imageTag = null
+              imageTag = gitCommit
+              sh """
+              #!/bin/bash
+              mkdir ~/.kube
+              cp /kubeconfig/config ~/.kube/config
+              ls -la ~/.kube/config
+              kubectl config use-context cluster.remote-context --user=admin --namespace=default
+              echo "checking if jenkinsdemo-deployment already exists"
+              if kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest; then
+                  echo "Application already exists, update..."
+                  kubectl set image deployment/jenkinsdemo-deployment jenkinstest=mycluster.icp:8500/default/jenkinstest:${imageTag} --namespace jenkinstest
+              else
+                  sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy.yml
+                  echo "Create deployment"
+                  kubectl apply -f manifests/kube.deploy.yml --namespace jenkinstest
+                  echo "Create service"
+              fi
+              echo "Describe deployment"
+              kubectl describe deployment jenkinsdemo-deployment --namespace jenkinstest
+              echo "finished"
+              """
+            }
           }
         }
         /* stage ('deploy') {
