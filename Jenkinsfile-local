@@ -104,7 +104,6 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             }
           }
         }
-      }
         /* stage ('deploy') {
           container('helm') {
             sh """
