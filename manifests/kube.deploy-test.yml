@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "test-jenkinsdemo-ingress"
+  annotations:
+    ingress.kubernetes.io/rewrite-target: "/"
+    ingress.kubernetes.io/secure-backends: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /test-jenkinstest
+        backend:
+          serviceName: test-jenkinsdemo-service
+          servicePort: 9443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "test-jenkinsdemo-service"
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  #type: LoadBalancer
+  type: NodePort
+  ports:
+  # the port that this service should serve on
+  - name: https
+    port: 9443
+  - name: http
+    port: 9080
+  selector:
+    app: "jenkinsdemo-selector"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "test-jenkinsdemo-deployment"
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "jenkinsdemo-selector"
+    spec:
+      containers:
+      - name: jenkinstest
+        image: mycluster.icp:8500/default/<DOCKER_IMAGE>
+        readinessProbe:
+          httpGet:
+            path: /jenkinstest/health
+            port: 9080
+          initialDelaySeconds: 60
+      #nodeSelector:
+      #  beta.kubernetes.io/arch: s390x
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 100Mi

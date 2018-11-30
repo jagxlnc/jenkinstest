@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "jenkinsdemo-ingress"
+  name: "dev-jenkinsdemo-ingress"
   annotations:
     ingress.kubernetes.io/rewrite-target: "/"
     ingress.kubernetes.io/secure-backends: "true"
@@ -9,15 +9,15 @@ spec:
   rules:
   - http:
       paths:
-      - path: /jenkinstest
+      - path: /dev-jenkinstest
         backend:
-          serviceName: jenkinsdemo-service
+          serviceName: dev-jenkinsdemo-service
           servicePort: 9443
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "jenkinsdemo-service"
+  name: "dev-jenkinsdemo-service"
 spec:
   # if your cluster supports it, uncomment the following to automatically create
   # an external load-balanced IP for the frontend service.
@@ -35,7 +35,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "jenkinsdemo-deployment"
+  name: "dev-jenkinsdemo-deployment"
 spec:
   # this replicas value is default
   # modify it according to your case
