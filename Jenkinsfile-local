@@ -26,13 +26,10 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
             sh '''
             mvn test install
             '''
-            stash includes: 'target/jenkinstest-1.0-SNAPSHOT.war', name: 'warfile'
           }
         }
         stage ('docker') {
           container('docker') {
-            unstash 'source'
-            unstash 'warfile'
             def imageTag = "mycluster.icp:8500/default/jenkinstest:${gitCommit}"
             echo "imageTag ${imageTag}"
             sh """
@@ -53,6 +50,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
         if (userInput == true) {
           stage ('deploy to dev') {
             container('kubectl') {
+              unstash 'source'
               def imageTag = null
               imageTag = gitCommit
               sh """
@@ -83,6 +81,7 @@ podTemplate(label: 'icp-liberty-build-2', slaveConnectTimeout: 600,
         if (userInput == true) {
           stage ('deploy to test') {
             container('kubectl') {
+              unstash 'source'
               def imageTag = null
               imageTag = gitCommit
               sh """
