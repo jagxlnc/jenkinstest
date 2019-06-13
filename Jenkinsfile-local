@@ -44,12 +44,11 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
           }
         }
       }
-      userInput = input(
+      /*userInput = input(
         id: 'Proceed1', message: 'Deploy to Dev?', parameters: [
         [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Dev?']
         ])
-      node ('
-      ') {
+      node ('icp-liberty-build-3') {
         if (userInput == true) {
           stage ('deploy to dev') {
             container('kubectl') {
@@ -76,7 +75,7 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
           }
         }
       }
-      /*userInput = input(
+      userInput = input(
         id: 'Proceed1', message: 'Deploy to Test?', parameters: [
         [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Test?']
         ])
