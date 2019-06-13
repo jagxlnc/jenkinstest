@@ -76,7 +76,7 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
           }
         }
       }
-      userInput = input(
+      /*userInput = input(
         id: 'Proceed1', message: 'Deploy to Test?', parameters: [
         [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Test?']
         ])
@@ -105,7 +105,7 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
               """
             }
           }
-        }
+        } */
         stage ('deploy') {
           container('helm') {
             sh """
