@@ -6,7 +6,7 @@ def volumes = [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/va
 volumes += secretVolume(secretName: 'microclimate-registry-secret', mountPath: '/msb_reg_sec')
 volumes += secretVolume(secretName: 'microclimate-helm-secret', mountPath: '/msb_helm_sec')
 
-podTemplate(label: 'icp-liberty-build-2', serviceAccount: serviceAccount, namespace: namespace,
+podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namespace: namespace,
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'docker:18.06.1-ce', ttyEnabled: true, command: 'cat'),
@@ -16,7 +16,7 @@ podTemplate(label: 'icp-liberty-build-2', serviceAccount: serviceAccount, namesp
     volumes: volumes
 )
 {
-    node ('icp-liberty-build-2') {
+    node ('icp-liberty-build-3') {
         stage ('Extract') {
             checkout scm
             gitCommit = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
@@ -48,7 +48,8 @@ podTemplate(label: 'icp-liberty-build-2', serviceAccount: serviceAccount, namesp
         id: 'Proceed1', message: 'Deploy to Dev?', parameters: [
         [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Dev?']
         ])
-      node ('icp-liberty-build-2') {
+      node ('
+      ') {
         if (userInput == true) {
           stage ('deploy to dev') {
             container('kubectl') {
@@ -79,7 +80,7 @@ podTemplate(label: 'icp-liberty-build-2', serviceAccount: serviceAccount, namesp
         id: 'Proceed1', message: 'Deploy to Test?', parameters: [
         [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Test?']
         ])
-      node ('icp-liberty-build-2') {
+      node ('icp-liberty-build-3') {
         if (userInput == true) {
           stage ('deploy to test') {
             container('kubectl') {
