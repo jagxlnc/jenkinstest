@@ -11,7 +11,7 @@ podTemplate(label: 'icp-liberty-build-2', serviceAccount: serviceAccount, namesp
         containerTemplate(name: 'maven', image: 'maven:3.5.3-jdk-8', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'docker:18.06.1-ce', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'ibmcom/microclimate-utils:1901', ttyEnabled: true, command: 'cat'),
-        containerTemplate(name: 'helm', image: 'ibmcom/microclimate-k8s-helm:v2.12.3', ttyEnabled: true, command: 'cat')
+        containerTemplate(name: 'helm', image: 'ibmcom/microclimate-k8s-helm:v2.9.1', ttyEnabled: true, command: 'cat')
     ],
     volumes: volumes
 )
