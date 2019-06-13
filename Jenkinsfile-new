@@ -44,67 +44,7 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
           }
         }
       }
-      /*userInput = input(
-        id: 'Proceed1', message: 'Deploy to Dev?', parameters: [
-        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Dev?']
-        ])
       node ('icp-liberty-build-3') {
-        if (userInput == true) {
-          stage ('deploy to dev') {
-            container('kubectl') {
-              unstash 'source'
-              def imageTag = null
-              imageTag = gitCommit
-              sh """
-              #!/bin/bash
-              echo "checking if dev-jenkinsdemo-deployment already exists"
-              if kubectl describe deployment dev-jenkinsdemo-deployment --namespace dev; then
-                  echo "Application already exists, update..."
-                  kubectl set image deployment/dev-jenkinsdemo-deployment jenkinstest=mycluster.icp:8500/default/jenkinstest:${imageTag} --namespace dev
-              else
-                  sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy-dev.yml
-                  echo "Create deployment"
-                  kubectl apply -f manifests/kube.deploy-dev.yml --namespace dev
-                  echo "Create service"
-              fi
-              echo "Describe deployment"
-              kubectl describe deployment dev-jenkinsdemo-deployment --namespace dev
-              echo "finished"
-              """
-            }
-          }
-        }
-      }
-      userInput = input(
-        id: 'Proceed1', message: 'Deploy to Test?', parameters: [
-        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Deploy to Test?']
-        ])
-      node ('icp-liberty-build-3') {
-        if (userInput == true) {
-          stage ('deploy to test') {
-            container('kubectl') {
-              unstash 'source'
-              def imageTag = null
-              imageTag = gitCommit
-              sh """
-              #!/bin/bash
-              echo "checking if test-jenkinsdemo-deployment already exists"
-              if kubectl describe deployment test-jenkinsdemo-deployment --namespace test; then
-                  echo "Application already exists, update..."
-                  kubectl set image deployment/test-jenkinsdemo-deployment jenkinstest=mycluster.icp:8500/default/jenkinstest:${imageTag} --namespace test
-              else
-                  sed -i "s/<DOCKER_IMAGE>/jenkinstest:${imageTag}/g" manifests/kube.deploy-test.yml
-                  echo "Create deployment"
-                  kubectl apply -f manifests/kube.deploy-test.yml --namespace test
-                  echo "Create service"
-              fi
-              echo "Describe deployment"
-              kubectl describe deployment test-jenkinsdemo-deployment --namespace test
-              echo "finished"
-              """
-            }
-          }
-        } */
         stage ('deploy') {
           container('helm') {
             sh """
@@ -114,3 +54,4 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
           }
         } 
     }
+}
