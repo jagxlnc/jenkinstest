@@ -51,7 +51,7 @@ podTemplate(label: 'icp-liberty-build-3', serviceAccount: serviceAccount, namesp
             helm init --skip-refresh --client-only
             helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/ 
             helm repo list
-            helm install ibm-charts/ibm-websphere-liberty --name my-liberty-app  --set image.repository=mycluster.icp:8500/default/jenkinstest:${gitCommit} --tls
+            helm install ibm-charts/ibm-websphere-liberty --name my-liberty-app  --set image.repository=mycluster.icp:8500/default/jenkinstest:${gitCommit} --tls --tls-ca-cert=/msb_helm_sec/ca.pem --tls-cert=/msb_helm_sec/cert.pem --tls-key=/msb_helm_sec/key.pem
             """
           }
         } 
